@@ -4,4 +4,7 @@
 <item android:id="@+id/krishak_website"
     android:title="@string/krishak"
     app:showAsAction="never"/>
+    <item android:id="@+id/detectDisease"
+        android:title="Detect disease"
+        app:showAsAction="never"/>
 </menu>

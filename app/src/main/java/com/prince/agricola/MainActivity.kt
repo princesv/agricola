@@ -27,6 +27,11 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
                 return true
             }
+            R.id.detectDisease->{
+                val intent=Intent(this,DiseaseActivity::class.java)
+                startActivity(intent)
+                return true
+            }
             else -> return true
         }
     }
