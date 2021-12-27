@@ -13,11 +13,11 @@ import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
 import android.view.View
-import android.widget.Toast
-import android.widget.Toolbar
+import android.widget.*
+import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.activity_disease.*
+//import kotlinx.android.synthetic.main.activity_disease.*
 import java.io.IOException
 import java.util.jar.Manifest
 
@@ -44,17 +44,21 @@ class DiseaseActivity : AppCompatActivity() {
         resources.assets.open(mSamplePath).use {
             mBitmap=BitmapFactory.decodeStream(it)
             mBitmap=Bitmap.createScaledBitmap(mBitmap,mInputSize,mInputSize,true)
-            mImageViewPlant.setImageBitmap(mBitmap)
+            val mImageView = findViewById<ImageView>(R.id.mImageViewPlant)
+            mImageView.setImageBitmap(mBitmap)
         }
+        val mCamera=findViewById<Button>(R.id.mCamera)
         mCamera.setOnClickListener {
             val callCameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             startActivityForResult(callCameraIntent,mCameraRequestCode)
         }
+        val mGallery=findViewById<Button>(R.id.mGallery)
         mGallery.setOnClickListener {
             val callGalleryIntent=Intent(Intent.ACTION_PICK)
             callGalleryIntent.type="image/*"
             startActivityForResult(callGalleryIntent,mGalleryRequestCode)
         }
+        val mSearchRemedy=findViewById<Button>(R.id.mSearchRemedy)
         mSearchRemedy.setOnClickListener {
             val searchRemedyIntent=Intent(Intent.ACTION_VIEW)
             searchRemedyIntent.setData(Uri.parse("https://www.google.com/search?q="+mDiseaseName+" remedy"))
@@ -68,8 +72,10 @@ class DiseaseActivity : AppCompatActivity() {
             if(resultCode== Activity.RESULT_OK&&data!=null){
                 mBitmap=data.extras!!.get("data") as Bitmap
                // mBitmap=scaleImage(mBitmap)
-                mImageViewPlant.setImageBitmap(mBitmap)
-                mResult.text = "Your photo image is set now"
+                val mImageView = findViewById<ImageView>(R.id.mImageViewPlant)
+                mImageView.setImageBitmap(mBitmap)
+                val mText=findViewById<TextView>(R.id.mResult)
+                mText.text = "Your photo image is set now"
             }else{
                 Toast.makeText(this,"Camera cancel..",Toast.LENGTH_LONG).show()
             }
@@ -82,7 +88,8 @@ class DiseaseActivity : AppCompatActivity() {
                     e.printStackTrace()
                 }
               //  mBitmap=scaleImage(mBitmap)
-                mImageViewPlant.setImageBitmap(mBitmap)
+                val mImageView = findViewById<ImageView>(R.id.mImageViewPlant)
+                mImageView.setImageBitmap(mBitmap)
             }
         }
         val progDialog=ProgressDialog(this@DiseaseActivity)
@@ -92,8 +99,10 @@ class DiseaseActivity : AppCompatActivity() {
         val handler=Handler()
         handler.postDelayed(Runnable {
             progDialog.dismiss()
+            val mResultBox=findViewById<CardView>(R.id.mResultBox)
             mResultBox.visibility=View.VISIBLE
             val results=mCatagorization.recognizeImage(mBitmap).firstOrNull()
+            val mResult=findViewById<TextView>(R.id.mResult)
             mResult.text="Plant disease detected:"+results?.title+"\n Confidence:"+results?.confidence
             mDiseaseName= results?.title.toString()
         },2000)
